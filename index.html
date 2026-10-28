@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DINO DIMENSION | نصرالدين بن هجيرة</title>
+  <meta name="description" content="DINO DIMENSION - أنظمة ذكية وبرمجيات مخصصة. بيع برامج جاهزة وتطوير برامج خاصة." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #07070b;
+      --bg-soft: #0e0e14;
+      --card: rgba(18, 14, 28, 0.85);
+      --primary: #c084fc;
+      --primary-dim: #a855f7;
+      --glow: rgba(192, 132, 252, 0.35);
+      --text: #f3e8ff;
+      --muted: #a1a1aa;
+      --border: rgba(192, 132, 252, 0.22);
+      --success: #4ade80;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* subtle noise / nostalgia grain */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ambient glow */
+    .ambient {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .ambient-1 { top: -150px; right: -100px; background: #7c3aed; }
+    .ambient-2 { bottom: 10%; left: -150px; background: #4c1d95; opacity: 0.12; }
+    .ambient-3 { top: 40%; left: 40%; background: #6b21a8; width: 400px; height: 400px; opacity: 0.08; }
+
+    /* ===== HEADER ===== */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 14px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(7, 7, 11, 0.82);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      transition: 0.3s;
+    }
+    header.scrolled { padding: 10px 5%; box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, #e9d5ff, #c084fc, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    nav { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: 0.25s;
+    }
+    nav a:hover, nav a.active {
+      background: rgba(192, 132, 252, 0.18);
+      color: var(--primary);
+    }
+
+    .music-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--primary);
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      transition: 0.25s;
+      margin-right: 8px;
+    }
+    .music-btn:hover, .music-btn.playing {
+      background: rgba(192, 132, 252, 0.2);
+      box-shadow: 0 0 18px var(--glow);
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none; border: none; color: var(--text);
+      font-size: 1.6rem; cursor: pointer;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 120px 5% 80px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 18px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      color: var(--primary);
+      margin-bottom: 24px;
+      letter-spacing: 1px;
+      background: rgba(192, 132, 252, 0.08);
+    }
+
+    .hero h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 700;
+      letter-spacing: 3px;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #f5e1ff 0%, #c084fc 50%, #7c3aed 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 60px rgba(192, 132, 252, 0.3);
+    }
+
+    .hero .tagline {
+      font-size: 1.25rem;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 36px;
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: 0.3s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      color: white;
+      box-shadow: 0 8px 28px rgba(124, 58, 237, 0.45);
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 36px rgba(124, 58, 237, 0.55);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover {
+      background: rgba(192, 132, 252, 0.12);
+      border-color: var(--primary);
+    }
+
+    /* ===== SECTIONS ===== */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 90px 5%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .section-title h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #e9d5ff, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-title p {
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    /* ===== PROJECTS ===== */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+    }
+
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+    }
+    .project-card:hover {
+      transform: translateY(-12px);
+      border-color: rgba(192, 132, 252, 0.5);
+      box-shadow: 0 20px 50px rgba(124, 58, 237, 0.25);
+    }
+
+    .project-card .thumb {
+      height: 180px;
+      overflow: hidden;
+      position: relative;
+    }
+    .project-card .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: 0.5s;
+    }
+    .project-card:hover .thumb img { transform: scale(1.08); }
+
+    .project-card .body {
+      padding: 22px;
+    }
+    .project-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .project-card p {
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .price {
+      display: inline-block;
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.05rem;
+    }
+    .price.free { color: var(--success); }
+    .price.dev { color: #fbbf24; }
+
+    /* ===== ABOUT ===== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .about-photo {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 0 60px rgba(124, 58, 237, 0.2);
+    }
+    .about-photo img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      max-height: 520px;
+    }
+    .about-photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(7,7,11,0.7) 0%, transparent 40%);
+      pointer-events: none;
+    }
+
+    .about-content h3 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+    .about-content .role {
+      color: var(--muted);
+      margin-bottom: 20px;
+      font-size: 1.05rem;
+    }
+    .about-content p {
+      margin-bottom: 24px;
+      color: #d4d4d8;
+      font-size: 1.08rem;
+    }
+
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .skill {
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(192, 132, 252, 0.12);
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      color: var(--primary);
+    }
+
+    /* ===== ORDER FORM ===== */
+    .order-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 700px;
+      margin: 0 auto;
+      backdrop-filter: blur(10px);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #e4e4e7;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(10, 10, 16, 0.8);
+      color: var(--text);
+      font-family: 'Cairo', sans-serif;
+      font-size: 1rem;
+      transition: 0.25s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.15);
+    }
+    .form-group textarea { min-height: 120px; resize: vertical; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .form-note {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* ===== CONTACT ===== */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 22px;
+    }
+
+    .contact-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px 22px;
+      text-align: center;
+      transition: 0.3s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .contact-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(124, 58, 237, 0.2);
+    }
+    .contact-card .icon {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+    .contact-card h4 {
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+      color: var(--primary);
+    }
+    .contact-card p {
+      font-size: 0.92rem;
+      color: var(--muted);
+      word-break: break-all;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 40px 5%;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    footer .logo-sm {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--primary);
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+    }
+
+    /* ===== GALLERY OVERLAY ===== */
+    .gallery-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 5, 10, 0.94);
+      backdrop-filter: blur(14px);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.35s;
+      padding: 20px;
+    }
+    .gallery-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .gallery-close {
+      position: absolute;
+      top: 20px; left: 20px;
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: var(--primary-dim);
+      border: none;
+      color: white;
+      font-size: 1.3rem;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .gallery-title {
+      color: var(--primary);
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    .gallery-content {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      max-width: 95vw;
+      padding: 10px;
+      scroll-snap-type: x mandatory;
+    }
+    .gallery-content img {
+      max-height: 70vh;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      scroll-snap-align: center;
+    }
+
+    /* ===== MUSIC IFRAME (hidden) ===== */
+    #yt-player {
+      position: absolute;
+      width: 1px; height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; }
+      .about-photo { max-width: 360px; margin: 0 auto; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      nav { display: none; }
+      nav.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: rgba(7,7,11,0.97);
+        padding: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .menu-toggle { display: block; }
+      .hero { padding-top: 100px; }
+      .order-box { padding: 28px 20px; }
+    }
+
+    /* success message */
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 30px;
+      color: var(--success);
+      font-size: 1.15rem;
+    }
+    .form-success.show { display: block; }
+  </style>
+</head>
+<body>
+  <div class="ambient ambient-1"></div>
+  <div class="ambient ambient-2"></div>
+  <div class="ambient ambient-3"></div>
+
+  <!-- HEADER -->
+  <header id="header">
+    <div class="logo">DINO DIMENSION</div>
+    <nav id="nav">
+      <a href="#home" class="active">الرئيسية</a>
+      <a href="#projects">المشاريع</a>
+      <a href="#about">من أنا</a>
+      <a href="#order">اطلب الآن</a>
+      <a href="#contact">تواصل</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="music-btn" id="musicBtn" title="تشغيل / إيقاف الموسيقى" aria-label="موسيقى">
+        ♪
+      </button>
+      <button class="menu-toggle" id="menuToggle" aria-label="القائمة">☰</button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-badge">✦ أنظمة • برمجيات • حلول ذكية</div>
+    <h1>DINO DIMENSION</h1>
+    <p class="tagline">
+      مطور متخصص في إنشاء أنظمة ذكية وبرمجيات مخصصة.<br />
+      أحول أفكارك إلى حلول احترافية جاهزة للاستخدام.
+    </p>
+    <div class="hero-actions">
+      <a href="#order" class="btn btn-primary">اطلب برنامجك الآن</a>
+      <a href="#projects" class="btn btn-ghost">شاهد المشاريع</a>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-title">
+      <h2>أفضل مشاريعي</h2>
+      <p>برامج جاهزة للبيع + إمكانية تطوير حلول خاصة حسب طلبك</p>
+    </div>
+
+    <div class="projects-grid">
+      <!-- 1 -->
+      <div class="project-card" data-title="إدارة المراكز البيداغوجية"
+           data-images='["images/projects/pedo1.jpg","images/projects/pedo2.jpg"]'
+           onclick="openGallery(this)">
+        <div class="thumb">
+          <img src="images/projects/pedo1.jpg" alt="إدارة المراكز البيداغوجية" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>إدارة المراكز البيداغوجية</h3>
+          <p>نظام كامل لإدارة المراكز النفسية والبيداغوجية</p>
+          <span class="price">50,000 دج</span>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="project-card" data-title="إدارة مخزون الإطعام"
+           data-images='["images/projects/food1.jpg","images/projects/food2.jpg"]'
+           onclick="openGallery(this)">
+        <div class="thumb">
+          <img src="images/projects/food1.jpg" alt="إدارة مخزون الإطعام" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>إدارة مخزون الإطعام</h3>
+          <p>نظام إدارة المطاعم والمخزون</p>
+          <span class="price">30,000 دج</span>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="project-card" data-title="برنامج مبيعات POS"
+           data-images='["images/projects/pos-cover.png","images/projects/pos1.jpg","images/projects/pos2.jpg"]'
+           onclick="openGallery(this)">
+        <div class="thumb">
+          <img src="images/projects/pos-cover.png" alt="برنامج مبيعات" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>برنامج مبيعات (POS)</h3>
+          <p>مخصص للمحلات ونقاط البيع</p>
+          <span class="price">25,000 دج</span>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="project-card" data-title="برنامج MISBHA"
+           data-images='["images/projects/misbha1.png","images/projects/misbha2.png"]'
+           onclick="openGallery(this)">
+        <div class="thumb">
+          <img src="images/projects/misbha1.png" alt="MISBHA" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>برنامج MISBHA</h3>
+          <p>للذكر والتسبيح — للهاتف والكمبيوتر</p>
+          <span class="price free">مجاني</span>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="project-card" data-title="إدارة صيانة المؤسسات الصناعية"
+           data-images='["images/projects/maint1.png","images/projects/maint2.png"]'
+           onclick="openGallery(this)">
+        <div class="thumb">
+          <img src="images/projects/maint1.png" alt="صيانة المؤسسات" loading="lazy" />
+        </div>
+        <div class="body">
+          <h3>إدارة صيانة المؤسسات الصناعية</h3>
+          <p>برنامج صيانة مدعوم بالذكاء الاصطناعي</p>
+          <span class="price dev">قيد التطوير</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-title">
+      <h2>من أنا</h2>
+      <p>نبذة مختصرة عني وعن مهاراتي</p>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-photo">
+        <img src="images/me.png" alt="نصرالدين بن هجيرة" />
+      </div>
+      <div class="about-content">
+        <h3>نصرالدين بن هجيرة</h3>
+        <p class="role">مطور أنظمة وبرمجيات مخصصة</p>
+        <p>
+          مطور متخصص في إنشاء أنظمة ذكية وبرمجيات مخصصة.
+          أحول أفكارك إلى حلول احترافية قابلة للاستخدام الفوري.
+          أعمل على تطبيقات سطح المكتب والويب، وأنظمة الإدارة،
+          والحلول المدعومة بالذكاء الاصطناعي.
+        </p>
+        <div class="skills">
+          <span class="skill">✅ برمجة تطبيقات</span>
+          <span class="skill">✅ أنظمة إدارة</span>
+          <span class="skill">✅ هندسة ميكانيكية وكهربائية</span>
+          <span class="skill">✅ حلول ذكية</span>
+          <span class="skill">✅ واجهات عربية</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORDER -->
+  <section id="order">
+    <div class="section-title">
+      <h2>اطلب الآن</h2>
+      <p>اختر برنامج جاهز أو اطلب تطوير برنامج خاص بك</p>
+    </div>
+
+    <div class="order-box">
+      <form name="order" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="orderForm">
+        <input type="hidden" name="form-name" value="order" />
+        <p style="display:none;">
+          <label>Don’t fill this out: <input name="bot-field" /></label>
+        </p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">الاسم الكامل *</label>
+            <input type="text" id="name" name="name" required placeholder="اسمك" />
+          </div>
+          <div class="form-group">
+            <label for="phone">رقم الواتساب *</label>
+            <input type="tel" id="phone" name="phone" required placeholder="05xxxxxxxx" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">البريد الإلكتروني</label>
+          <input type="email" id="email" name="email" placeholder="example@gmail.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="type">نوع الطلب *</label>
+          <select id="type" name="type" required>
+            <option value="">— اختر —</option>
+            <option value="ready">شراء برنامج جاهز</option>
+            <option value="custom">تطوير برنامج خاص</option>
+            <option value="both">الاثنين معاً</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="product">البرنامج المطلوب (إن وُجد)</label>
+          <select id="product" name="product">
+            <option value="">— اختياري —</option>
+            <option value="pedo">إدارة المراكز البيداغوجية (50,000 دج)</option>
+            <option value="food">إدارة مخزون الإطعام (30,000 دج)</option>
+            <option value="pos">برنامج مبيعات POS (25,000 دج)</option>
+            <option value="misbha">برنامج MISBHA (مجاني)</option>
+            <option value="maint">إدارة صيانة المؤسسات (قيد التطوير)</option>
+            <option value="other">أخرى / خاص</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="message">تفاصيل الطلب *</label>
+          <textarea id="message" name="message" required placeholder="اكتب هنا وصف البرنامج اللي تبيه أو أي ملاحظات..."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">إرسال الطلب</button>
+          <a href="https://wa.me/213796285122?text=السلام%20عليكم%20،%20أريد%20طلب%20برنامج%20من%20DINO%20DIMENSION"
+             class="btn btn-ghost" target="_blank" rel="noopener">
+            واتساب مباشر
+          </a>
+        </div>
+        <p class="form-note">بعد الإرسال راح توصلك رسالة تأكيد، ونرد عليك في أقرب وقت.</p>
+      </form>
+
+      <div class="form-success" id="formSuccess">
+        ✅ تم إرسال طلبك بنجاح!<br />
+        راح نتواصل معاك قريباً.
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-title">
+      <h2>تواصل معي</h2>
+      <p>اختر الطريقة اللي تناسبك</p>
+    </div>
+
+    <div class="contact-grid">
+      <a class="contact-card" href="https://wa.me/213796285122" target="_blank" rel="noopener">
+        <div class="icon">💬</div>
+        <h4>واتساب</h4>
+        <p>0796 28 51 22</p>
+      </a>
+      <a class="contact-card" href="mailto:benhajiransreeldin55@gmail.com">
+        <div class="icon">📧</div>
+        <h4>البريد الإلكتروني</h4>
+        <p>benhajiransreeldin55@gmail.com</p>
+      </a>
+      <a class="contact-card" href="https://t.me/DINMANDO" target="_blank" rel="noopener">
+        <div class="icon">✈️</div>
+        <h4>تيليغرام</h4>
+        <p>@DINMANDO</p>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="logo-sm">DINO DIMENSION</div>
+    <p>© 2026 نصرالدين بن هجيرة — جميع الحقوق محفوظة</p>
+  </footer>
+
+  <!-- Gallery -->
+  <div class="gallery-overlay" id="galleryOverlay">
+    <button class="gallery-close" onclick="closeGallery()" aria-label="إغلاق">✕</button>
+    <div class="gallery-title" id="galleryTitle"></div>
+    <div class="gallery-content" id="galleryContent"></div>
+  </div>
+
+  <!-- YouTube player (hidden) for music -->
+  <div id="yt-player"></div>
+
+  <script>
+    // ===== Header scroll =====
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // ===== Mobile menu =====
+    const menuToggle = document.getElementById('menuToggle');
+    const nav = document.getElementById('nav');
+    menuToggle.addEventListener('click', () => nav.classList.toggle('open'));
+    nav.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => nav.classList.remove('open'));
+    });
+
+    // ===== Active nav link =====
+    const sections = document.querySelectorAll('section[id]');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 120) current = s.id;
+      });
+      nav.querySelectorAll('a').forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+    });
+
+    // ===== Gallery =====
+    function openGallery(card) {
+      const overlay = document.getElementById('galleryOverlay');
+      const content = document.getElementById('galleryContent');
+      const title = document.getElementById('galleryTitle');
+      let images = [];
+      try { images = JSON.parse(card.dataset.images || '[]'); } catch(e) {}
+      title.textContent = card.dataset.title || '';
+      content.innerHTML = '';
+      images.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = card.dataset.title || '';
+        content.appendChild(img);
+      });
+      if (images.length === 0) {
+        content.innerHTML = '<p style="color:#aaa">لا توجد صور إضافية</p>';
+      }
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeGallery() {
+      document.getElementById('galleryOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('galleryOverlay').addEventListener('click', e => {
+      if (e.target.id === 'galleryOverlay') closeGallery();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGallery(); });
+
+    // ===== Music (YouTube) =====
+    // Video ID: GPYG4MQkU2s
+    let player;
+    let isPlaying = false;
+    const musicBtn = document.getElementById('musicBtn');
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('yt-player', {
+        height: '1',
+        width: '1',
+        videoId: 'GPYG4MQkU2s',
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          loop: 1,
+          playlist: 'GPYG4MQkU2s',
+          modestbranding: 1
+        },
+        events: {
+          onReady: () => {},
+          onStateChange: (e) => {
+            if (e.data === YT.PlayerState.ENDED) {
+              player.playVideo();
+            }
+          }
+        }
+      });
+    }
+
+    // Load YT API
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+
+    musicBtn.addEventListener('click', () => {
+      if (!player || !player.playVideo) {
+        alert('الموسيقى تتحمل... جرب مرة أخرى بعد ثواني');
+        return;
+      }
+      if (isPlaying) {
+        player.pauseVideo();
+        musicBtn.classList.remove('playing');
+        musicBtn.textContent = '♪';
+        isPlaying = false;
+      } else {
+        player.playVideo();
+        player.unMute();
+        player.setVolume(45);
+        musicBtn.classList.add('playing');
+        musicBtn.textContent = '❚❚';
+        isPlaying = true;
+      }
+    });
+
+    // ===== Form success (for Netlify) =====
+    // If using plain static without Netlify processing, show success on submit
+    const form = document.getElementById('orderForm');
+    form.addEventListener('submit', function(e) {
+      // Let Netlify handle if deployed there.
+      // For local preview we can still show message after short delay.
+      if (window.location.hostname === 'localhost' || window.location.protocol === 'file:') {
+        e.preventDefault();
+        form.style.display = 'none';
+        document.getElementById('formSuccess').classList.add('show');
+      }
+    });
+  </script>
+</body>
+</html>
